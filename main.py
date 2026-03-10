@@ -47,7 +47,8 @@ class CropApp:
 
 
     def get_image(self):
-        def thread_function():
+        def thread_function(): #making thread to ensure that camera
+            # and crop app will be working at the same time
             while True:
                 result, frame = self.camera.read()
                 if result is False:
@@ -60,8 +61,7 @@ class CropApp:
                 if key == 32:  # Space
                     self.current_image = frame.copy()
                     self.root.after(0, self.display_image_from_camera)
-                    # cv2.imshow(f"zdjecie{image_counter}.png",saved)
-        threading.Thread(target=thread_function, daemon=True).start()  # start wątku
+        threading.Thread(target=thread_function, daemon=True).start()  #
     def display_image_from_camera(self):
         pil_img= Image.fromarray(cv2.cvtColor(self.current_image, cv2.COLOR_BGR2RGB))
         self.image = ImageTk.PhotoImage(pil_img)
@@ -76,6 +76,7 @@ class CropApp:
             self.rectangle_start_x,self.rectangle_start_y,
             self.rectangle_start_x,self.rectangle_start_y,
             outline='green',width=3)
+
     def mouse_release(self, event):
         x_up,y_up,x_down,y_down=self.canvas.coords(self.rectangle_id)
         height, width = self.current_image.shape[:2]
@@ -96,63 +97,4 @@ class CropApp:
         filename = f'pionki/{name}/{name}{counter + 1}.png'
         cv2.imwrite(filename, self.croped_image)
         print(f"zapisano plik {filename}")
-
-
-    def define_type_king(self):
-        if self.croped_image is None:
-            print('No image')
-            return
-        os.makedirs("pionki/krol",exist_ok=True)
-        counter=len([i for i in os.listdir("pionki/krol") if i.endswith('.png')])
-        filename=f'pionki/krol/krol{counter+1}.png'
-        cv2.imwrite(filename,self.croped_image)
-        print(f"zapisano plik {filename}")
-
-    def define_type_queen(self):
-        if self.croped_image is None:
-            print('No image')
-            return
-        os.makedirs("pionki/krolowa", exist_ok=True)
-        counter = len([i for i in os.listdir("pionki/krolowa") if i.endswith('.png')])
-        filename = f'pionki/krolowa/krolowa{counter + 1}.png'
-        cv2.imwrite(filename, self.croped_image)
-        print(f"zapisano plik {filename}")
-    def define_type_rook(self):
-        if self.croped_image is None:
-            print('No image')
-            return
-        os.makedirs("pionki/wieza", exist_ok=True)
-        counter = len([i for i in os.listdir("pionki/wieza") if i.endswith('.png')])
-        filename = f'pionki/wieza/wieza{counter + 1}.png'
-        cv2.imwrite(filename, self.croped_image)
-        print(f"zapisano plik {filename}")
-    def define_type_bishop(self):
-        if self.croped_image is None:
-            print('No image')
-            return
-        os.makedirs("pionki/goniec", exist_ok=True)
-        counter = len([i for i in os.listdir("pionki/goniec") if i.endswith('.png')])
-        filename = f'pionki/goniec/goniec{counter + 1}.png'
-        cv2.imwrite(filename, self.croped_image)
-        print(f"zapisano plik {filename}")
-    def define_type_knight(self):
-        if self.croped_image is None:
-            print('No image')
-            return
-        os.makedirs("pionki/skoczek", exist_ok=True)
-        counter = len([i for i in os.listdir("pionki/skoczek") if i.endswith('.png')])
-        filename = f'pionki/skoczek/skoczek{counter + 1}.png'
-        cv2.imwrite(filename, self.croped_image)
-        print(f"zapisano plik {filename}")
-    def define_type_pawn(self):
-        if self.croped_image is None:
-            print('No image')
-            return
-        os.makedirs("pionki/pionek", exist_ok=True)
-        counter = len([i for i in os.listdir("pionki/pionek") if i.endswith('.png')])
-        filename = f'pionki/pionek/pionek{counter + 1}.png'
-        cv2.imwrite(filename, self.croped_image)
-        print(f"zapisano plik {filename}")
-
-
 app = CropApp()
