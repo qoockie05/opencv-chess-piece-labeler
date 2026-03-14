@@ -24,6 +24,13 @@ class CropApp:
         button_frame.pack()
         self.button_open_cam = tk.Button(button_frame, text='Open Camera',command=self.get_image)
         self.button_open_cam.pack()
+        self.piece_color = tk.StringVar(value="bialy")
+
+        color_frame = tk.Frame(self.root)
+        color_frame.pack()
+
+        tk.Radiobutton(color_frame, text="Biały", variable=self.piece_color, value="bialy").pack(side="left")
+        tk.Radiobutton(color_frame, text="Czarny", variable=self.piece_color, value="czarny").pack(side="left")
         self.button_king = tk.Button(button_frame, text='Krol',command=lambda:self.define_type("krol"))
         self.button_king.pack(side='left')
         self.button_queen = tk.Button(button_frame, text='Krolowa', command=lambda:self.define_type("krolowa"))
@@ -88,13 +95,18 @@ class CropApp:
                            self.rectangle_start_x,self.rectangle_start_y,
                            event.x,event.y)
 
-    def define_type(self,name):
+    def define_type(self, name):
         if self.croped_image is None:
-            print('No image')
+            print("No image")
             return
-        os.makedirs(f"pionki/{name}", exist_ok=True)
-        counter = len([i for i in os.listdir(f"pionki/{name}") if i.endswith('.png')])
-        filename = f'pionki/{name}/{name}{counter + 1}.png'
+
+        color = self.piece_color.get()
+        folder = f"pionki/{color}/{name}"
+        os.makedirs(folder, exist_ok=True)
+
+        counter = len([i for i in os.listdir(folder) if i.endswith(".png")])
+        filename = f"{folder}/{name}{counter + 1}.png"
+
         cv2.imwrite(filename, self.croped_image)
         print(f"zapisano plik {filename}")
 app = CropApp()
